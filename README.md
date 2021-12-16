@@ -9,7 +9,7 @@ Many DNA methylation (DNAm) data are generated from tissues composed of various 
 
 ## Package installation
 
-Code of *scDeconv* are freely available at <https://github.com/yuabrahamliu/scDeconv>.
+Code of *scDeconv* is freely available at <https://github.com/yuabrahamliu/scDeconv>.
 
 The following commands can be used to install this R package. 
 
