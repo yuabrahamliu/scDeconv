@@ -5,7 +5,7 @@
 
 ## Introduction
 
-Many DNA methylation (DNAm) data are generated from tissues composed of various cell types and hence cell deconvolution methods are needed to infer their cell compositions. However, a bottleneck for DNAm data is the lack of cell type specific DNAm references. On the other hand, scRNA-seq data are being accumulated rapidly with various cell type transcriptomic signatures characterized, and also many paired bulk RNA-DNAm data are publicly available currently. Hence, the R package *scDeconv* was developed to use these resources to solve the reference deficiency problem of DNAm data and deconvolve them from scRNA-seq data in a trans-omics manner. It assumes that paired samples have similar cell compositions and so the cell content information deconvolved from the scRNA-seq and paired RNA data can be transferred to the paired DNAm samples, and then an ensemble model is trained to predict these cell contents with DNAm features, and also adjust the paired RNA deconvolution in a co-training manner. This tutorial will introduce the main functions of *scDeconv*.
+Many DNA methylation (DNAm) data are generated from tissues composed of various cell types and hence cell deconvolution methods are needed to infer their cell compositions. However, a bottleneck for DNAm data is the lack of cell-type-specific DNAm references. On the other hand, scRNA-seq data are being accumulated rapidly with various cell type transcriptomic signatures characterized, and also many paired bulk RNA-DNAm data are publicly available currently. Hence, the R package *scDeconv* was developed to use these resources to solve the reference deficiency problem of DNAm data and deconvolve them from scRNA-seq data in a trans-omics manner. It assumes that paired samples have similar cell compositions and so the cell content information deconvolved from the scRNA-seq and paired RNA data can be transferred to the paired DNAm samples, and then an ensemble model is trained to predict these cell contents with DNAm features, and also adjust the paired RNA deconvolution in a co-training manner. This tutorial will introduce the main functions of *scDeconv*.
 
 ## Package installation
 
@@ -280,6 +280,6 @@ head(externalcellconts)
 #> GSM788415 0.3099221 0.2017879 0.1769487 0.3113413
 ```
 
-In addition, *scDeconv* also contains other useful functions such as *refDeconv* to deconvolve bulk data using reference from the same omics (single-omics deconvolution), and *celldiff* to select cell type specific differential features from bulk data, and *enrichwrapper* to annotate differential DNAm feature function using a correlation-based method, etc. They will not be covered by this tutorial to make it clearer, but the users can explore them via the help documents.
+In addition, *scDeconv* also contains other useful functions such as *refDeconv* to deconvolve bulk data using reference from the same omics (single-omics deconvolution), and *celldiff* to select cell-type-specific inter-group differential features from bulk data, and *enrichwrapper* to annotate differential DNAm feature function using a correlation-based method, etc. They will not be covered by this tutorial to make it clearer, but the users can explore them via the help documents.
 
 
