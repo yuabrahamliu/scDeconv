@@ -1480,7 +1480,26 @@ scRef <- function(Seuratobj,
                                     targetcells = targetcelltypes,
                                     celltypecol = celltypecolname)
 
+  if(!is.null(targetcelltypes)){
 
+    #Extract and organize cell meta data
+    meta <- Seuratobj[[]]
+    meta <- meta[c('orig.ident', 'nCount_RNA', 'nFeature_RNA',
+                   celltypecolname)]
+    names(meta)[ncol(meta)] <- 'celltype'
+
+    targetcelltypenum <- length(unique(targetcelltypes[targetcelltypes %in% meta$celltype]))
+
+    if(length(unique(Seuratobjlist$cellmarkers$celltype)) < ceiling(targetcelltypenum*0.5)){
+
+      Seuratobjlist <- processSeuratobj(Seuratobj = Seuratobj,
+                                        targetcells = NULL,
+                                        celltypecol = celltypecolname)
+
+
+    }
+
+  }
 
   #Seuratobjlist$meta$celltype[Seuratobjlist$meta$celltype == 'fFB1'] <- 'F'
   #Seuratobjlist$cellmarkers$celltype[Seuratobjlist$cellmarkers$celltype == 'fFB1'] <- 'F'
@@ -1514,6 +1533,10 @@ scRef <- function(Seuratobj,
   #LUAD & LUSC
   #refcounts <- readRDS('orirefcounts.2021-09-19_21-01-45.nobalance.rds')
   #PBMC
+  #refcounts <- readRDS('orirefcounts.2021-11-16_20-57-31.nobalance.rds')
+  #PBMC filterred
+  #refcounts <- readRDS('orirefcounts.2022-02-05_17-48-01.nobalance.rds')
+  #PBMC ATAC
   #refcounts <- readRDS('orirefcounts.2021-11-16_20-57-31.nobalance.rds')
 
   refcounts <- refcounts[rowSums(refcounts) != 0, , drop = FALSE]
@@ -1597,6 +1620,10 @@ scRef <- function(Seuratobj,
                         adjustcutoff = adjustcutoff,
                         suffix = tag)
 
+  if(!is.null(targetcelltypes)){
+    sharedcelltypes <- intersect(colnames(res$ref), targetcelltypes)
+    res$ref <- res$ref[,colnames(res$ref) %in% sharedcelltypes, drop = FALSE]
+  }
 
   return(res)
 
