@@ -1614,7 +1614,7 @@ scRef <- function(Seuratobj,
                         targetexp = targetdat,
                         targetlogged = targetlogged,
                         conditioning = FALSE,
-                        savefile = savefile,
+                        savefile = FALSE,
                         minrefgenenum = minrefgenenum,
                         cutoff = cutoff,
                         adjustcutoff = adjustcutoff,
@@ -1624,6 +1624,27 @@ scRef <- function(Seuratobj,
     sharedcelltypes <- intersect(colnames(res$ref), targetcelltypes)
     res$ref <- res$ref[,colnames(res$ref) %in% sharedcelltypes, drop = FALSE]
   }
+
+
+  if(savefile == TRUE){
+
+    stamp <- Sys.time()
+    stamp <- gsub(pattern = ' ', replacement = '_', x = stamp)
+    stamp <- gsub(pattern = ':', replacement = '-', x = stamp)
+    stamp <- paste0('.', stamp)
+
+
+    saveRDS(res$ref, file = paste0('ref.final.nolog', stamp, tag, '.rds'))
+
+    if(!is.null(targetdat)){
+
+      saveRDS(res$targetnolog, file = paste0('targetexp.final.nolog', stamp, tag, '.rds'))
+
+    }
+
+
+  }
+
 
   return(res)
 
