@@ -1373,6 +1373,16 @@ combatconditon <- function(reftpmsublist,
 #'  this percent value and should be a number between 0 and 1, but if the
 #'  parameter \code{samplebalance} is set as TRUE, bootstrapping and SMOTE
 #'  will be performed to do the sampling and this parameter will be omitted.
+#'@param pseudobulkdat If the scRNA-seq data transferred via \code{Seuratobj}
+#'  is large, the pseudo-bulk RNA-seq data generation step will become time
+#'  consuming, and if this same scRNA-seq data needs to be used repeatedly for
+#'  deconvolving different bulk datasets, to save time, it is recommended to
+#'  save the synthesized pseudo-bulk RNA-seq data at the first time by setting
+#'  the parameter \code{savefile} as TRUE, and then the function will save the
+#'  pseudo-bulk RNA-seq data, and next time the data can be transferred via
+#'  this parameter \code{pseudobulkdat}, so that they will not be synthesized
+#'  again. The default value of this parameter is NULL, and in this case, the
+#'  synthesis step will not be skipped.
 #'@param geneversion To calculate the TPM value of the genes in the reference
 #'  matrix, the effective length of the genes will be needed. This parameter
 #'  is used to define from which genome version the effective gene length will
@@ -1462,6 +1472,7 @@ scRef <- function(Seuratobj,
                   pseudobulknum = 10,
                   samplebalance = FALSE,
                   pseudobulkpercent = 0.9,
+                  pseudobulkdat = NULL,
                   geneversion = "hg19",
                   genekey = "SYMBOL",
                   targetdat = NULL,
@@ -1504,12 +1515,22 @@ scRef <- function(Seuratobj,
   #Seuratobjlist$meta$celltype[Seuratobjlist$meta$celltype == 'fFB1'] <- 'F'
   #Seuratobjlist$cellmarkers$celltype[Seuratobjlist$cellmarkers$celltype == 'fFB1'] <- 'F'
 
-  refcounts <- makeref.cv(scmatrix = Seuratobjlist$counts,
-                          metainfo = Seuratobjlist$meta,
-                          nround = pseudobulknum,
-                          samplepercent = pseudobulkpercent,
-                          balance = samplebalance,
-                          threads = threads)
+  if(is.null(pseudobulkdat)){
+
+    refcounts <- makeref.cv(scmatrix = Seuratobjlist$counts,
+                            metainfo = Seuratobjlist$meta,
+                            nround = pseudobulknum,
+                            samplepercent = pseudobulkpercent,
+                            balance = samplebalance,
+                            threads = threads)
+
+
+  }else{
+
+    refcounts <- pseudobulkdat
+
+  }
+
 
   tag <- ''
 
@@ -1526,7 +1547,9 @@ scRef <- function(Seuratobj,
     stamp <- gsub(pattern = ':', replacement = '-', x = stamp)
     stamp <- paste0('.', stamp)
 
-    saveRDS(refcounts, file = paste0('orirefcounts', stamp, tag, '.rds'))
+    if(is.null(pseudobulkdat)){
+      saveRDS(refcounts, file = paste0('orirefcounts', stamp, tag, '.rds'))
+    }
 
   }
 
