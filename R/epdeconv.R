@@ -157,9 +157,17 @@ methylpres <- function(methylrefs,
     targetmethyldat <- targetmethyldat[, row.names(elasticnetmodel$beta[[1]]),
                                        drop = FALSE]
 
-    #newx should be a matrix with genes/probes as columns and samples as rows
-    pres <- predict(object = elasticnetmodel, newx = targetmethyldat)
-
+    pres <- tryCatch({
+      
+      predict(object = elasticnetmodel, newx = targetmethyldat)
+      
+    }, error = function(err){
+      
+      library(glmnet)
+      
+      predict(object = elasticnetmodel, newx = targetmethyldat)
+      
+    })
 
 
   }else{
