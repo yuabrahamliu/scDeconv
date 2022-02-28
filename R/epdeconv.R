@@ -158,16 +158,22 @@ methylpres <- function(methylrefs,
                                        drop = FALSE]
 
     pres <- tryCatch({
-      
+
       predict(object = elasticnetmodel, newx = targetmethyldat)
-      
+
     }, error = function(err){
-      
-      library(glmnet)
-      
-      predict(object = elasticnetmodel, newx = targetmethyldat)
-      
+
+      NULL
+
     })
+
+    if(is.null(pres)){
+
+      library(glmnet)
+
+      pres <- predict(object = elasticnetmodel, newx = targetmethyldat)
+
+    }
 
 
   }else{
