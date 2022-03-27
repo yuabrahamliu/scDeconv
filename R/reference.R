@@ -524,9 +524,8 @@ prepseudobulk <- function(Seuratobj,
     stamp <- gsub(pattern = ':', replacement = '-', x = stamp)
     stamp <- paste0('.', stamp)
 
-    if(is.null(pseudobulkdat)){
-      saveRDS(refcounts, file = paste0('orirefcounts', stamp, tag, '.rds'))
-    }
+    saveRDS(refcounts, file = paste0('orirefcounts', stamp, tag, '.rds'))
+
 
   }
 
