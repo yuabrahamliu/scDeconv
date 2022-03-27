@@ -415,6 +415,128 @@ makeref.cv <- function(scmatrix = Seuratobjlist$counts,
 
 
 
+#'Synthesize pseudo-bulk RNA-seq data from scRNA-seq data
+#'
+#'Synthesize pseudo-bulk RNA-seq data for RNA reference generation.
+#'
+#'@param Seuratobj An object of class Seurat generated with the \code{Seurat}
+#'  R package from scRNA-seq data, should contain read count data, normalized
+#'  data, and cell meta data. The meta data should contain a column recording
+#'  the cell type name of each cell.
+#'@param targetcelltypes The cell types in \code{Seuratobj} whose content need
+#'  to be deconvolved via \code{scDeconv} package. If NULL, all the cell types
+#'  included in it will be included. Default is NULL.
+#'@param celltypecolname In the "meta.data" slot of \code{Seuratobj}, which
+#'  column records the cell type information for each cell and the name of
+#'  this column should be transferred to this parameter. Default value is
+#'  "annotation".
+#'@param pseudobulknum The scRNA-seq cell counts contained in \code{Seuratobj}
+#'  will be sampled and used to generate some pseudo-bulk RNA-seq samples, for
+#'  each cell type. The parameter \code{pseudobulknum} here defines how many
+#'  pseudo-bulk RNA-seq data for each cell type need to be generated. Default
+#'  is 10.
+#'@param samplebalance During generating the pseudo-bulk RNA-seq data, the
+#'  number of single cells can be sampled is always different for each cell
+#'  type. If want to adjust this bias and make the single cell numbers used to
+#'  make pseudo-bulk RNA-seq data same for different cell types, set this
+#'  parameter as TRUE. Then, the cell types with too many candidate cells will
+#'  be down-sampled while the ones with much fewer cells will be over-sampled.
+#'  The down-sampling is performed using bootstrapping, and the over-sampling
+#'  is conducted with SMOTE (Synthetic Minority Over-sampling Technique). This
+#'  is a time-consuming step and the default value of this parameter is FALSE.
+#'@param pseudobulkpercent If the parameter \code{samplebalance} is FALSE, for
+#'  the pseudo-bulk sampling for each cell type, a percent of single cells for
+#'  each cell type will be randomly sampled and this parameter is used to set
+#'  this percent value and should be a number between 0 and 1, but if the
+#'  parameter \code{samplebalance} is set as TRUE, bootstrapping and SMOTE
+#'  will be performed to do the sampling and this parameter will be omitted.
+#'@param threads Number of threads need to be used. Its default value is 1.
+#'@param savefile Whether need to save the generated pseudo-bulk matrix as an
+#'  rds file in the working directory automatically. Default is FALSE.
+#'@return A pseudo-bulk RNA-seq matrix with pseudo-bulk samples as columns and
+#'  genes as features. The gene values in this matrix are pseudo-bulk RNA-seq
+#'  read counts. This matrix can be transferred to the functions \code{scRef},
+#'  \code{scDeconv}, or \code{epDeconv}. Their parameter \code{pseudobulkdat}
+#'  can accept this matrix, so that they can skip their own pseudo-bulk data
+#'  synthesis step and directly use this matrix as their pseudo-bulk data to
+#'  further generate the RNA deconvolution reference. Because if the scRNA-seq
+#'  dataset need to be converted to the RNA referece is large, generating the
+#'  pseudo-bulk data can be time-consuming and if the scRNA-seq data need to
+#'  be repeatedly used to deconvolve different datasets, to avoid repeating
+#'  this pseudo-bulk data generation process, this function can be used to
+#'  synthesize and save the data in advance, then the data can be repeatedly
+#'  used and the synthesis step can always be skipped.
+#'@export
+prepseudobulk <- function(Seuratobj,
+                          targetcelltypes = NULL,
+                          celltypecolname = "annotation",
+                          pseudobulknum = 10,
+                          samplebalance = FALSE,
+                          pseudobulkpercent = 0.9,
+                          threads = 1,
+                          savefile = FALSE){
+
+
+  Seuratobjlist <- processSeuratobj(Seuratobj = Seuratobj,
+                                    targetcells = targetcelltypes,
+                                    celltypecol = celltypecolname)
+
+  if(!is.null(targetcelltypes)){
+
+    #Extract and organize cell meta data
+    meta <- Seuratobj[[]]
+    meta <- meta[c('orig.ident', 'nCount_RNA', 'nFeature_RNA',
+                   celltypecolname)]
+    names(meta)[ncol(meta)] <- 'celltype'
+
+    targetcelltypenum <- length(unique(targetcelltypes[targetcelltypes %in% meta$celltype]))
+
+    if(length(unique(Seuratobjlist$cellmarkers$celltype)) < ceiling(targetcelltypenum*0.5)){
+
+      Seuratobjlist <- processSeuratobj(Seuratobj = Seuratobj,
+                                        targetcells = NULL,
+                                        celltypecol = celltypecolname)
+
+
+    }
+
+  }
+
+  refcounts <- makeref.cv(scmatrix = Seuratobjlist$counts,
+                          metainfo = Seuratobjlist$meta,
+                          nround = pseudobulknum,
+                          samplepercent = pseudobulkpercent,
+                          balance = samplebalance,
+                          threads = threads)
+
+  tag <- ''
+
+  if(savefile == TRUE){
+
+    if(samplebalance == TRUE){
+      tag <- '.balance'
+    }else{
+      tag <- '.nobalance'
+    }
+
+    stamp <- Sys.time()
+    stamp <- gsub(pattern = ' ', replacement = '_', x = stamp)
+    stamp <- gsub(pattern = ':', replacement = '-', x = stamp)
+    stamp <- paste0('.', stamp)
+
+    if(is.null(pseudobulkdat)){
+      saveRDS(refcounts, file = paste0('orirefcounts', stamp, tag, '.rds'))
+    }
+
+  }
+
+  return(refcounts)
+
+}
+
+
+
+
 #Remove the '.' in gene names and if after removing, some original
 #different gene names become the same, merge them together by
 #getting their means
@@ -1374,15 +1496,16 @@ combatconditon <- function(reftpmsublist,
 #'  parameter \code{samplebalance} is set as TRUE, bootstrapping and SMOTE
 #'  will be performed to do the sampling and this parameter will be omitted.
 #'@param pseudobulkdat If the scRNA-seq data transferred via \code{Seuratobj}
-#'  is large, the pseudo-bulk RNA-seq data generation step will become time
+#'  is large, the pseudo-bulk RNA-seq data generation step will become time-
 #'  consuming, and if this same scRNA-seq data needs to be used repeatedly for
 #'  deconvolving different bulk datasets, to save time, it is recommended to
-#'  save the synthesized pseudo-bulk RNA-seq data at the first time by setting
-#'  the parameter \code{savefile} as TRUE, and then the function will save the
-#'  pseudo-bulk RNA-seq data, and next time the data can be transferred via
-#'  this parameter \code{pseudobulkdat}, so that they will not be synthesized
-#'  again. The default value of this parameter is NULL, and in this case, the
-#'  synthesis step will not be skipped.
+#'  use the function \code{prepseudobulk} to generate and save the pseudo-bulk
+#'  RNA-seq data at the first time, and then the data can be transferred to
+#'  this parameter \code{pseudobulkdat}, so that \code{scRef} can always skip
+#'  its own pseudo-bulk data generation step and directly use the data here to
+#'  further generate the final RNA deconvolution reference. The default value
+#'  of this parameter is NULL, and in this case, the synthesis step will not
+#'  be skipped and \code{scRef} will synthesize the pseudo-bulk data itself.
 #'@param geneversion To calculate the TPM value of the genes in the reference
 #'  matrix, the effective length of the genes will be needed. This parameter
 #'  is used to define from which genome version the effective gene length will
