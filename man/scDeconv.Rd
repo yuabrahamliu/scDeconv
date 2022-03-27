@@ -56,15 +56,15 @@ default value of this parameter is FALSE, so that no such adjustment will
 be done during sampling the pseudo-bulk samples.}
 
 \item{pseudobulkdat}{If the scRNA-seq data transferred via \code{Seuratobj}
-is large, the pseudo-bulk RNA-seq data generation step will become time
+is large, the pseudo-bulk RNA-seq data generation step will become time-
 consuming, and if this same scRNA-seq data needs to be used repeatedly for
 deconvolving different bulk datasets, to save time, it is recommended to
-save the synthesized pseudo-bulk RNA-seq data at the first time by setting
-the parameter \code{savefile} as TRUE, and then the function will save the
-pseudo-bulk RNA-seq data, and next time the data can be transferred via
-this parameter \code{pseudobulkdat}, so that they will not be synthesized
-again. The default value of this parameter is NULL, and in this case, the
-synthesis step will not be skipped.}
+use the function \code{prepseudobulk} to generate and save the pseudo-bulk
+RNA-seq data at the first time, and then the data can be transferred to
+this parameter \code{pseudobulkdat}, so that \code{scDeconv} can skip its
+own pseudo-bulk data generation step and use the data here to generate the
+final RNA deconvolution reference. The default value of this parameter is
+NULL, and in this case, the synthesis step will not be skipped.}
 
 \item{geneversion}{To calculate the TPM value of the genes in the reference
 matrix, the effective length of the genes will be needed. This parameter
