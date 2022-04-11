@@ -2,7 +2,7 @@
 % Please edit documentation in R/interaction.R
 \name{enrichwrapper}
 \alias{enrichwrapper}
-\title{Annotate the function of the cell type specific differential CpG sites}
+\title{Annotate the function of the cell-type-specific differential CpG sites}
 \usage{
 enrichwrapper(
   sigprobes,
@@ -22,18 +22,20 @@ enrichwrapper(
 group differential probe selection results for each cell type.}
 
 \item{celltype}{The cell type whose differential methylation probes needs to
-be annotated.}
+be annotated. Should be a string of the cell type name.}
 
 \item{pairedRNA}{The RNA part of the paired RNA-DNA methylation dataset. If
 both this parameter and \code{pairedmethyl} are not NULL, a correlation-
 based method will be used to find the genes whose RNA expression level in
-the RNA data significantly correlated with any of the cell type specific
+the RNA data significantly correlated with any of the cell-type-specific
 differential probes in the paired methylation data, and then the enriched
 function of these selected genes will be analyzed and each of them will
-also has its individual function annotated. The default value is NULL, and
+also has its individual function annotated. Should be a matrix with each
+column representing a sample and each row for one gene. Row names are gene
+symbols and column names are sample IDs. The default value is NULL, and
 in this case, the correlation-base method will not be used, and instead,
 the function annotation and enrichment analysis will be directly conducted
-on the cell type specific hyper and hypomethylated DNA methylation probes
+on the cell-type-specific hyper and hypomethylated DNA methylation probes
 in \code{sigprobes}, with the probes mapped to corresponding genes first.}
 
 \item{pairedmethyl}{The methylation part of the paired RNA-DNA methylation
@@ -41,11 +43,15 @@ dataset. If both this parameter and \code{pairedRNA} are not NULL, the
 correlation-based method will be used to find the genes with an expression
 level significantly correlated to the differential methylation probes and
 perform function analysis on them, while if it is NULL, the analysis will
-be conducted directly on the genes corresponding to the cell type specific
-differential methylation probes in \code{sigprobes}. Default is NULL.}
+be conducted directly on the genes corresponding to the cell-type-specific
+differential methylation probes in \code{sigprobes}. It should be a beta
+value matrix with each column representing one sample and each row for a
+probe. Row names are probe names. Column names are sample IDs. The sample
+IDs should be the same as the ones in \code{rnamat}, because they are data
+for paired samples. Default is NULL.}
 
 \item{abscut}{When the correlation method is used to select the genes with a
-significant correlation to the cell type specific differential probes, the
+significant correlation to the cell-type-specific differential probes, the
 ones with an absolute Pearson correlation coefficient value greater than
 this parameter value will be selected and used for function analysis. The
 default value is 0.6.}
@@ -56,7 +62,13 @@ in the regions defined by this parameter, its corresponding gene will be
 used for the function analysis. Default is "TSS200", so that only probes
 within TSS200 regions will be used for gene mapping, and it can also be a
 vector, such as \code{c("TSS200", "TSS1500", "1stExon")}, so that probes
-within any of these 3 regions will be used for gene mapping.}
+within any of these 3 regions will be used for gene mapping. On the other
+hand, when the function analysis is performed on the genes significantly
+correlated with the changed methylation probes, actually the methylation
+probes are merge into gene methylation values first, and then the gene
+methylation values will be used to calculated the correlation with the
+gene RNA values in the paired RNA data. The gene methylation values are
+summarized according to the regions in this parameter \cod{generegions}.}
 
 \item{platform}{A string indicating the platform of the differential probes
 recorded in \code{sigprobes}. Default is "450K", can also be "EPIC".}
@@ -66,7 +78,7 @@ after getting the genes for function analysis from the cell type indicated
 by \code{celltype}, these genes will be used to compare with the genes
 obtained similarly from other cell types recorded in \code{sigprobes}, and
 only the ones uniquely contained in the target cell type will be used for
-the downstream analysis. If this parameter is NULL, this filter step will
+the downstream analysis. If this parameter is FALSE, this filter step will
 not be performed. Default is TRUE.}
 
 \item{dbs}{The databases for gene function enrichment analysis. Default is
@@ -84,6 +96,6 @@ hypermethylated probes (when correlation-based method is not used), and if
 \code{write} is TRUE, txt files will be made to save these results.
 }
 \description{
-Annotate the function of the cell type specific differential DNA methylation
+Annotate the function of the cell-type-specific differential DNA methylation
 probes called from \code{celldiff}.
 }
