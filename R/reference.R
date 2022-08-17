@@ -726,12 +726,12 @@ caltpms <- function(countmat = refcounts,
 
   #library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 
-  tpmlengthdat <- paste0('C:/Users/liuy47/Desktop/Transfer/codestransfer/deconv/files/tpmlength.',
-                         version, '.rds')
-  tpmlength <- readRDS(tpmlengthdat)
+  #tpmlengthdat <- paste0('C:/Users/liuy47/Desktop/Transfer/codestransfer/deconv/files/tpmlength.',
+  #                       version, '.rds')
+  #tpmlength <- readRDS(tpmlengthdat)
 
-  #tpmlengthdat <- paste0('tpmlength.', version)
-  #tpmlength <- get(tpmlengthdat)
+  tpmlengthdat <- paste0('tpmlength.', version)
+  tpmlength <- get(tpmlengthdat)
 
 
   orgmat <- orggenes(oriref = countmat,
