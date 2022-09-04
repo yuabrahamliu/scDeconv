@@ -9,6 +9,10 @@ Many DNA methylation (DNAm) data are from tissues composed of various cell types
 
 It assumes that paired samples have similar cell compositions. So the cell content information deconvolved from the scRNA-seq and paired RNA data can be transferred to the paired DNAm samples. Then an ensemble model is trained to fit these cell contents with DNAm features and adjust the paired RNA deconvolution in a co-training manner. Finally, the model can be used on other bulk DNAm data to predict their relative cell type abundances. If given an appropriate paired dataset, *scDeconv* can also deconvolve other omics, such as ATAC-seq data. Furthermore, the package also contains other functions, such as identifying cell-type-specific inter-group differential features from bulk DNAm data.
 
+## Keywords
+
+cell deconvolution, DNA methylation, scRNA-seq, ensemble, co-training, cell-type-specific inter-group differential features
+
 ## Package overview
 
 The package has three modules. The first is a single-omics deconvolution module. Its function `scRef` can construct cell transcriptomic references from scRNA-seq data. Next, the reference is transferred to the function `refDeconv`. It performs a recursion process to solve a constrained linear model to deconvolve bulk RNA data with the RNA reference. 
