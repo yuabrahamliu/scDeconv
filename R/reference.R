@@ -744,7 +744,7 @@ caltpms <- function(countmat = refcounts,
 
   tpmlengthdat <- paste0('tpmlength.', version)
   
-  dat(tpmlengthdat)
+  data(tpmlengthdat)
   
   tpmlength <- get(tpmlengthdat)
 
