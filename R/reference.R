@@ -741,14 +741,19 @@ caltpms <- function(countmat = refcounts,
   #tpmlengthdat <- paste0('C:/Users/liuy47/Desktop/Transfer/codestransfer/deconv/files/tpmlength.',
   #                       version, '.rds')
   #tpmlength <- readRDS(tpmlengthdat)
-
-  tpmlengthdat <- paste0('tpmlength.', version)
   
-  data(tpmlengthdat)
   
-  tpmlength <- get(tpmlengthdat)
-
-
+  
+  if(version == 'mm10'){
+    tpmlength <- get('tpmlength.mm10')
+  }else if(version == 'hg38'){
+    tpmlength <- get('tpmlength.hg38')
+  }else{
+    tpmlength <- get('tpmlength.hg19')
+  }
+  
+  
+  
   orgmat <- orggenes(oriref = countmat,
                      version = version,
                      genekey = genekey)
