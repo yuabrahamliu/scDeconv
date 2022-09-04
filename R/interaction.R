@@ -893,6 +893,8 @@ geneannotation <- function(genesymbols = NULL,
 
   #summaryannotation <-
   #  readRDS('C:/Users/liuy47/Desktop/Transfer/codestransfer/deconv/files/summaryannotation.rds')
+  
+  data('summaryannotation')
 
   summaryannotation <- get('summaryannotation')
 
