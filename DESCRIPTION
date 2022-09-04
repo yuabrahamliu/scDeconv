@@ -15,6 +15,8 @@ Description: Many DNA methylation (DNAm) data are generated from tissues with
 	signatures characterized. Hence, the R package scDeconv is developed to 
 	deconvolve bulk DNAm data from scRNA-seq data in a trans-omics manner and 
 	solve the reference deficiency problem of DNAm data.
+biocViews: cell deconvolution, scRNA-seq, DNA methylation, co-training, 
+    ensemble, cell-type-specific inter-group differential features
 License: `use_mit_license()`
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
