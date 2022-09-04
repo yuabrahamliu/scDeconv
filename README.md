@@ -35,18 +35,6 @@ library(devtools)
 install_github('yuabrahamliu/scDeconv')
 ```
 
-It can also be installed via Bioconductor. 
-
-```
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-    
-# The following initializes usage of Bioc devel
-BiocManager::install(version = 'devel')
-
-BiocManager::install("scDeconv")
-```
-
 ## Data preparation
 
 We will use the data that accompany with *scDeconv* package in this tutorial. They contain a *Seurat* object generated from scRNA-seq data and preprocessed by the R package *Seurat*. It is a subset of a human placenta scRNA-seq dataset in ArrayExpress, with experiment code E-MTAB-6701 (droplet-based data), and covers 1388 cells and 21737 genes. We will deconvolve 4 main placental cell types in it, including extravillous trophoblasts (EVTs), fibroblasts (FBs), Hofbauer cells (HBs), and villous cytotrophoblasts (VCTs). Among them, EVT and VCT are epithelial trophoblasts with similar origins, while HB cells are fetal macrophages in the placenta. The cell type information is contained in the metadata of the *Seurat* object. In addition, this *Seurat* object also has the gene read count data and normalized data. We will use it to generate an RNA deconvolution reference via *scDeconv*.
