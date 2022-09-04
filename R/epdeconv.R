@@ -270,6 +270,40 @@ calbaseweight <- function(rnares,
 #'@param adjustminus In some extreme situations, the cell contents predicted
 #'  may be minus values and this parameter indicates whether these minus ones
 #'  should be changed to 0 in the final result. Default is FALSE.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+#'pDNAm <- readRDS(pDNAm)
+#'
+#'externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+#'externalDNAm <- readRDS(externalDNAm)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
+#'
+#'dnamres <- epDeconv(rnaref = refres$ref, 
+#'                    rnamat = refres$targetnolog, 
+#'                    rnamatlogged = FALSE, 
+#'                    methylmat = pDNAm, 
+#'                    learnernum = 10, 
+#'                    resscale = TRUE)
+#'                    
+#'externalcellconts <- methylpredict(model = dnamres, 
+#'                                   targetmethyldat = externalDNAm, 
+#'                                   resscale = TRUE, 
+#'                                   adjustminus = TRUE)
 #'@return A matrix recording the cell composition result for the samples.
 #'@export
 methylpredict <- function(model = NULL,
@@ -544,6 +578,36 @@ protectnames <- function(changednames,
 #'  methylation data is provided to the parameter \code{targetmethyldat}, a
 #'  slot recording its cell contents result predicted by the model will also
 #'  be returned (slot "methyltargetcellcounts").
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+#'pDNAm <- readRDS(pDNAm)
+#'
+#'externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+#'externalDNAm <- readRDS(externalDNAm)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
+#'
+#'dnamres <- epDeconv(rnaref = refres$ref, 
+#'                    rnamat = refres$targetnolog, 
+#'                    rnamatlogged = FALSE, 
+#'                    methylmat = pDNAm, 
+#'                    learnernum = 10, 
+#'                    resscale = TRUE, 
+#'                    targetmethyldat = externalDNAm)
 #'@export
 epDeconv <- function(rnaref = NULL,
 

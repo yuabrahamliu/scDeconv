@@ -141,6 +141,26 @@ compheatmap <- function(compmat,
 #'@return Generate a box plot to show the sample cell contents, and if these
 #'  samples belong to different groups, also heatmaps will be made to show
 #'  the cell content comparison results among/between different groups.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'rnares <- scDeconv(Seuratobj = scRNA,  
+#'                   targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                   celltypecolname = 'annotation',  
+#'                   pseudobulkdat = pseudobulk, 
+#'                   targetdat = pRNA, 
+#'                   targetlogged = TRUE, 
+#'                   resscale = TRUE, 
+#'                   plot = FALSE)
+#'
+#'celldeconvplots(cellcontres = rnares$deconvres)
 #'@export
 celldeconvplots <- function(cellcontres,
                             pddat = NULL,
@@ -556,6 +576,37 @@ getplotdat <- function(celltypes,
 #'  for its plot. If the parameter \code{corcmp} is set as TRUE, an additional
 #'  scatter plot comparing the cell-cell correlation between the two datasets
 #'  will also be drawn.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+#'pDNAm <- readRDS(pDNAm)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
+#'
+#'dnamres <- epDeconv(rnaref = refres$ref, 
+#'                    rnamat = refres$targetnolog, 
+#'                    rnamatlogged = FALSE, 
+#'                    methylmat = pDNAm, 
+#'                    learnernum = 10, 
+#'                    resscale = TRUE)
+#'
+#'cellscatterplots(dat1 = dnamres$rnacellconts, 
+#'                 dat2 = dnamres$methylcellconts, 
+#'                 xtitle = 'RNA cell contents',
+#'                 ytitle = 'Methylation cell contents')
 #'@export
 cellscatterplots <- function(dat1,
                              dat2,
@@ -1275,6 +1326,27 @@ singlersquare <- function(idx,
 #'@param threads Number of threads need to be used to do the computation. Its
 #'  default value is 1.
 #'@return A matrix recording the cell composition result for the samples.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
+#'
+#'rnares <- refDeconv(ref = refres$ref, 
+#'                    targetdat = refres$targetnolog, 
+#'                    targetlogged = FALSE, 
+#'                    resscale = TRUE)
 #'@export
 refDeconv <- function(ref,
                       targetdat,
@@ -1547,10 +1619,28 @@ refDeconv <- function(ref,
 #'@return A list containing the generated RNA reference, the adjusted target
 #'  data to be deconvolved, and the cell deconvolution result for the samples.
 #'  The gene values in the adjusted target data are non-log transformed ones.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'rnares <- scDeconv(Seuratobj = scRNA,  
+#'                   targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                   celltypecolname = 'annotation',  
+#'                   pseudobulkdat = pseudobulk, 
+#'                   targetdat = pRNA, 
+#'                   targetlogged = TRUE, 
+#'                   resscale = TRUE)
 #'@export
 scDeconv <- function(Seuratobj,
                      targetcelltypes = NULL,
-                     celltypecolname = "annotation",
+                     celltypecolname = "annotation", 
+                     pseudobulknum = 100,
                      samplebalance = FALSE,
                      pseudobulkdat = NULL,
                      geneversion = 'hg19',
@@ -1582,7 +1672,7 @@ scDeconv <- function(Seuratobj,
   refres <- scRef(Seuratobj = Seuratobj,
                   targetcelltypes = targetcelltypes,
                   celltypecolname = celltypecolname,
-                  pseudobulknum = 100,
+                  pseudobulknum = pseudobulknum,
                   samplebalance = samplebalance,
                   pseudobulkpercent = 0.9,
                   pseudobulkdat = pseudobulkdat,

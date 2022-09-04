@@ -78,6 +78,52 @@ covarpcs <- function(covardat = pcdat){
 #'  and the feature names, p-values, adjusted p-values, etc, are included. In
 #'  addition, volcano plots for the differential features for each cell type
 #'  will also be generated.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+#'pDNAm <- readRDS(pDNAm)
+#'
+#'externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+#'externalDNAm <- readRDS(externalDNAm)
+#'
+#'DNAmpd <- system.file('extdata', 'DNAmpd.rds', package = 'scDeconv')
+#'DNAmpd <- readRDS(DNAmpd)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
+#'
+#'dnamres <- epDeconv(rnaref = refres$ref, 
+#'                    rnamat = refres$targetnolog, 
+#'                    rnamatlogged = FALSE, 
+#'                    methylmat = pDNAm, 
+#'                    learnernum = 10, 
+#'                    resscale = TRUE, 
+#'                    targetmethyldat = externalDNAm)
+#'                    
+#'totalcellconts <- rbind(dnamres$methylcellconts, 
+#'                        dnamres$methyltargetcellcounts)
+#'
+#'totalvardat <- DNAmpd[c("sampleid", "Samplegroup", "Gestwk")]
+#'
+#'totalresponse <- cbind(pDNAm, externalDNAm)
+#'
+#'celldiffprobes <- celldiff(cellconts = totalcellconts,
+#'                           vardat = totalvardat, 
+#'                           responsedat = totalresponse, 
+#'                           pcutoff = 0.01, 
+#'                           gradientcutoff = 0)
 #'@export
 celldiff <- function(cellconts,
                      vardat,
@@ -1383,7 +1429,7 @@ enrich <- function(enhancegenes,
 #'  probes are merge into gene methylation values first, and then the gene
 #'  methylation values will be used to calculated the correlation with the
 #'  gene RNA values in the paired RNA data. The gene methylation values are
-#'  summarized according to the regions in this parameter \cod{generegions}.
+#'  summarized according to the regions in this parameter \code{generegions}.
 #'@param platform A string indicating the platform of the differential probes
 #'  recorded in \code{sigprobes}. Default is "450K", can also be "EPIC".
 #'@param uniquegenes A logical value and if this parameter is set as TRUE,
@@ -1403,6 +1449,58 @@ enrich <- function(enhancegenes,
 #'  based method is used) or for the genes mapped from the hypomethylated and
 #'  hypermethylated probes (when correlation-based method is not used), and if
 #'  \code{write} is TRUE, txt files will be made to save these results.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+#'pDNAm <- readRDS(pDNAm)
+#'
+#'externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+#'externalDNAm <- readRDS(externalDNAm)
+#'
+#'DNAmpd <- system.file('extdata', 'DNAmpd.rds', package = 'scDeconv')
+#'DNAmpd <- readRDS(DNAmpd)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
+#'
+#'dnamres <- epDeconv(rnaref = refres$ref, 
+#'                    rnamat = refres$targetnolog, 
+#'                    rnamatlogged = FALSE, 
+#'                    methylmat = pDNAm, 
+#'                    learnernum = 10, 
+#'                    resscale = TRUE, 
+#'                    targetmethyldat = externalDNAm)
+#'                    
+#'totalcellconts <- rbind(dnamres$methylcellconts, 
+#'                        dnamres$methyltargetcellcounts)
+#'
+#'totalvardat <- DNAmpd[c("sampleid", "Samplegroup", "Gestwk")]
+#'
+#'totalresponse <- cbind(pDNAm, externalDNAm)
+#'
+#'celldiffprobes <- celldiff(cellconts = totalcellconts,
+#'                           vardat = totalvardat, 
+#'                           responsedat = totalresponse, 
+#'                           pcutoff = 0.01, 
+#'                           gradientcutoff = 0)
+#'
+#'hbenrichres <- enrichwrapper(sigprobes =  celldiffprobes, 
+#'                             celltype = 'HB', 
+#'                             pairedRNA = pRNA, 
+#'                             pairedmethyl = pDNAm, 
+#'                             dbs = c('Reactome_2016'))
 #'@export
 enrichwrapper <- function(sigprobes,
                           celltype,
@@ -1570,6 +1668,13 @@ summaryfeature <- function(dat, featurecolidx){
 #'  will be discarded, so that the beta values of all the genes are averaged
 #'  only from their uniquely related probes. Default is FALSE.
 #'@return A matrix recording the summarized gene beta values for samples.
+#'@examples 
+#'pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+#'pDNAm <- readRDS(pDNAm)
+#'
+#'pDNAmgenes <- probetogene(betadat = pDNAm, 
+#'                          platform = "450K", 
+#'                          group450k850k = "TSS200")
 #'@export
 probetogene <- function(betadat,
                         platform = "450K",

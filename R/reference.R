@@ -466,6 +466,18 @@ makeref.cv <- function(scmatrix = Seuratobjlist$counts,
 #'  this pseudo-bulk data generation process, this function can be used to
 #'  synthesize and save the data in advance, then the data can be repeatedly
 #'  used and the synthesis step can always be skipped.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pseudobulk <- scRef(Seuratobj = scRNA, 
+#'                    targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                    celltypecolname = 'annotation',  
+#'                    pseudobulknum = 10, #It is suggested to use 100 instead
+#'                    pseudobulkpercent = 0.9)
 #'@export
 prepseudobulk <- function(Seuratobj,
                           targetcelltypes = NULL,
@@ -1587,6 +1599,22 @@ combatconditon <- function(reftpmsublist,
 #'  \code{targetdat}, a adjusted one will also be returned as an element of
 #'  this list. The gene values in this adjusted matrix are non-log transformed
 #'  values.
+#'@examples 
+#'scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+#'scRNA <- readRDS(scRNA)
+#'
+#'pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+#'pRNA <- readRDS(pRNA)
+#'
+#'pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+#'pseudobulk <- readRDS(pseudobulk)
+#'
+#'refres <- scRef(Seuratobj = scRNA,  
+#'                targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+#'                celltypecolname = 'annotation',  
+#'                pseudobulkdat = pseudobulk, 
+#'                targetdat = pRNA, 
+#'                targetlogged = TRUE)
 #'@export
 scRef <- function(Seuratobj,
                   targetcelltypes = NULL,
