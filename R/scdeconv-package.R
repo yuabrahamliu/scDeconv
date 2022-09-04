@@ -37,15 +37,7 @@
 #'@import limma
 #'@importFrom limma lmFit eBayes topTable
 #'@import IlluminaHumanMethylation450kanno.ilmn12.hg19
-#'@importFrom IlluminaHumanMethylation450kanno.ilmn12.hg19 Other Islands.UCSC Locations
 #'@import IlluminaHumanMethylationEPICanno.ilm10b4.hg19
-#'@importFrom IlluminaHumanMethylationEPICanno.ilm10b4.hg19 Other Islands.UCSC Locations
 #'@useDynLib scDeconv
 #'@name scDeconv
-#'@keyword cell deconvolution
-#'@keyword scRNA-seq
-#'@keyword DNA methylation
-#'@keyword co-training
-#'@keyword ensemble
-#'@keyword cell-type-specific inter-group differential features
 NULL
