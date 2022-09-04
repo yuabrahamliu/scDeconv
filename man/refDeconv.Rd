@@ -58,3 +58,25 @@ A matrix recording the cell composition result for the samples.
 \description{
 Deconvolve cell contents using reference from the same omics.
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+refres <- scRef(Seuratobj = scRNA,  
+               targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+               celltypecolname = 'annotation',  
+               pseudobulkdat = pseudobulk, 
+               targetdat = pRNA, 
+               targetlogged = TRUE)
+
+rnares <- refDeconv(ref = refres$ref, 
+                   targetdat = refres$targetnolog, 
+                   targetlogged = FALSE, 
+                   resscale = TRUE)
+}

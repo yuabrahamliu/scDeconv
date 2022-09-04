@@ -173,3 +173,20 @@ values.
 \description{
 Make cell deconvolution reference matrix from scRNA-seq data.
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+refres <- scRef(Seuratobj = scRNA,  
+               targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+               celltypecolname = 'annotation',  
+               pseudobulkdat = pseudobulk, 
+               targetdat = pRNA, 
+               targetlogged = TRUE)
+}

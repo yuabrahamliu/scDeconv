@@ -76,3 +76,50 @@ Find cell type specific inter-group differential features from bulk data and
 cell content information using a regression model containing an interaction
 term between the sample group and the specific cell type content.
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+pDNAm <- readRDS(pDNAm)
+
+externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+externalDNAm <- readRDS(externalDNAm)
+
+DNAmpd <- system.file('extdata', 'DNAmpd.rds', package = 'scDeconv')
+DNAmpd <- readRDS(DNAmpd)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+refres <- scRef(Seuratobj = scRNA,  
+               targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+               celltypecolname = 'annotation',  
+               pseudobulkdat = pseudobulk, 
+               targetdat = pRNA, 
+               targetlogged = TRUE)
+
+dnamres <- epDeconv(rnaref = refres$ref, 
+                   rnamat = refres$targetnolog, 
+                   rnamatlogged = FALSE, 
+                   methylmat = pDNAm, 
+                   learnernum = 10, 
+                   resscale = TRUE, 
+                   targetmethyldat = externalDNAm)
+                   
+totalcellconts <- rbind(dnamres$methylcellconts, 
+                       dnamres$methyltargetcellcounts)
+
+totalvardat <- DNAmpd[c("sampleid", "Samplegroup", "Gestwk")]
+
+totalresponse <- cbind(pDNAm, externalDNAm)
+
+celldiffprobes <- celldiff(cellconts = totalcellconts,
+                          vardat = totalvardat, 
+                          responsedat = totalresponse, 
+                          pcutoff = 0.01, 
+                          gradientcutoff = 0)
+}

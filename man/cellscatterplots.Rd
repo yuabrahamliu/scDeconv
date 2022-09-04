@@ -80,3 +80,35 @@ Draw scatter plots to compare two sets of cell content values and compare
 two sets of cell-cell correlation values. For each cell type, its scatter
 plot accounts for one facet of all the plots.
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+pDNAm <- readRDS(pDNAm)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+refres <- scRef(Seuratobj = scRNA,  
+               targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+               celltypecolname = 'annotation',  
+               pseudobulkdat = pseudobulk, 
+               targetdat = pRNA, 
+               targetlogged = TRUE)
+
+dnamres <- epDeconv(rnaref = refres$ref, 
+                   rnamat = refres$targetnolog, 
+                   rnamatlogged = FALSE, 
+                   methylmat = pDNAm, 
+                   learnernum = 10, 
+                   resscale = TRUE)
+
+cellscatterplots(dat1 = dnamres$rnacellconts, 
+                dat2 = dnamres$methylcellconts, 
+                xtitle = 'RNA cell contents',
+                ytitle = 'Methylation cell contents')
+}

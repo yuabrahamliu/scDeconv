@@ -76,3 +76,16 @@ used and the synthesis step can always be skipped.
 \description{
 Synthesize pseudo-bulk RNA-seq data for RNA reference generation.
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pseudobulk <- scRef(Seuratobj = scRNA, 
+                   targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+                   celltypecolname = 'annotation',  
+                   pseudobulknum = 10, #It is suggested to use 100 instead
+                   pseudobulkpercent = 0.9)
+}

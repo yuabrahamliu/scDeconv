@@ -55,3 +55,11 @@ A matrix recording the summarized gene beta values for samples.
 Summarize the methylation beta values of probes to genes by averaging the
 probes located closely to the TSS of a gene.
 }
+\examples{
+pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+pDNAm <- readRDS(pDNAm)
+
+pDNAmgenes <- probetogene(betadat = pDNAm, 
+                         platform = "450K", 
+                         group450k850k = "TSS200")
+}

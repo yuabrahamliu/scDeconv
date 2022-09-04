@@ -68,7 +68,7 @@ correlated with the changed methylation probes, actually the methylation
 probes are merge into gene methylation values first, and then the gene
 methylation values will be used to calculated the correlation with the
 gene RNA values in the paired RNA data. The gene methylation values are
-summarized according to the regions in this parameter \cod{generegions}.}
+summarized according to the regions in this parameter \code{generegions}.}
 
 \item{platform}{A string indicating the platform of the differential probes
 recorded in \code{sigprobes}. Default is "450K", can also be "EPIC".}
@@ -98,4 +98,57 @@ hypermethylated probes (when correlation-based method is not used), and if
 \description{
 Annotate the function of the cell-type-specific differential DNA methylation
 probes called from \code{celldiff}.
+}
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+pDNAm <- readRDS(pDNAm)
+
+externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+externalDNAm <- readRDS(externalDNAm)
+
+DNAmpd <- system.file('extdata', 'DNAmpd.rds', package = 'scDeconv')
+DNAmpd <- readRDS(DNAmpd)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+refres <- scRef(Seuratobj = scRNA,  
+               targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+               celltypecolname = 'annotation',  
+               pseudobulkdat = pseudobulk, 
+               targetdat = pRNA, 
+               targetlogged = TRUE)
+
+dnamres <- epDeconv(rnaref = refres$ref, 
+                   rnamat = refres$targetnolog, 
+                   rnamatlogged = FALSE, 
+                   methylmat = pDNAm, 
+                   learnernum = 10, 
+                   resscale = TRUE, 
+                   targetmethyldat = externalDNAm)
+                   
+totalcellconts <- rbind(dnamres$methylcellconts, 
+                       dnamres$methyltargetcellcounts)
+
+totalvardat <- DNAmpd[c("sampleid", "Samplegroup", "Gestwk")]
+
+totalresponse <- cbind(pDNAm, externalDNAm)
+
+celldiffprobes <- celldiff(cellconts = totalcellconts,
+                          vardat = totalvardat, 
+                          responsedat = totalresponse, 
+                          pcutoff = 0.01, 
+                          gradientcutoff = 0)
+
+hbenrichres <- enrichwrapper(sigprobes =  celldiffprobes, 
+                            celltype = 'HB', 
+                            pairedRNA = pRNA, 
+                            pairedmethyl = pDNAm, 
+                            dbs = c('Reactome_2016'))
 }

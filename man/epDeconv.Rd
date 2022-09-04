@@ -187,3 +187,34 @@ be returned (slot "methyltargetcellcounts").
 Deconvolve bulk DNA methylation data with RNA reference and also by a paired
 bulk RNA-bulk DNA methylation dataset
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pDNAm <- system.file('extdata', 'pairedDNAmdat.rds', package = 'scDeconv')
+pDNAm <- readRDS(pDNAm)
+
+externalDNAm <- system.file('extdata', 'externalDNAmdat.rds', package = 'scDeconv')
+externalDNAm <- readRDS(externalDNAm)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+refres <- scRef(Seuratobj = scRNA,  
+               targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+               celltypecolname = 'annotation',  
+               pseudobulkdat = pseudobulk, 
+               targetdat = pRNA, 
+               targetlogged = TRUE)
+
+dnamres <- epDeconv(rnaref = refres$ref, 
+                   rnamat = refres$targetnolog, 
+                   rnamatlogged = FALSE, 
+                   methylmat = pDNAm, 
+                   learnernum = 10, 
+                   resscale = TRUE, 
+                   targetmethyldat = externalDNAm)
+}

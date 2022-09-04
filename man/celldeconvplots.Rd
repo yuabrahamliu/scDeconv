@@ -61,3 +61,24 @@ the cell content comparison results among/between different groups.
 Draw box plot and heatmaps to compare cell deconvolution results between/
 among different sample groups, or a box plot for only one sample group
 }
+\examples{
+scRNA <- system.file('extdata', 'scRNAseqdat.rds', package = 'scDeconv')
+scRNA <- readRDS(scRNA)
+
+pRNA <- system.file('extdata', 'pairedRNAdat.rds', package = 'scDeconv')
+pRNA <- readRDS(pRNA)
+
+pseudobulk <- system.file('extdata', 'pseudobulk.rds', package = 'scDeconv')
+pseudobulk <- readRDS(pseudobulk)
+
+rnares <- scDeconv(Seuratobj = scRNA,  
+                  targetcelltypes = c('EVT', 'FB', 'HB', 'VCT'),  
+                  celltypecolname = 'annotation',  
+                  pseudobulkdat = pseudobulk, 
+                  targetdat = pRNA, 
+                  targetlogged = TRUE, 
+                  resscale = TRUE, 
+                  plot = FALSE)
+
+celldeconvplots(cellcontres = rnares$deconvres)
+}
