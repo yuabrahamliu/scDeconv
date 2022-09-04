@@ -1,0 +1,50 @@
+Package: scDeconv
+Title: scDeconv is an R Package to Deconvolve Bulk DNA Methylation Data with scRNA-seq Data in a Multi-omics Manner.
+Version: 1.0.0
+Authors@R: 
+    person(given = "Yu",
+           family = "Liu",
+           role = c("aut", "cre"),
+           email = "yuabrahamliu@gmail.com",
+           comment = c(ORCID = "0000-0002-8631-4347"))
+Description: Many DNA methylation (DNAm) data are generated from tissues with 
+    various cell types, so cell deconvolution methods are needed to accurately 
+	infer their cell compositions. However, a bottleneck for DNAm data is the 
+	lack of cell type specific DNAm references. On the other hand, scRNA-seq 
+	data are being accumulated rapidly with various cell type transcriptomic 
+	signatures characterized. Hence, the R package scDeconv is developed to 
+	deconvolve bulk DNAm data from scRNA-seq data in a trans-omics manner and 
+	solve the reference deficiency problem of DNAm data.
+License: `use_mit_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: 
+    AnnotationDbi (>= 1.52.0),
+    doParallel (>= 1.0.16),
+    enrichR (>= 3.0),
+    foreach (>= 1.5.1),
+    ggplot2 (>= 3.3.3),
+    glmnet (>= 4.1.1),
+    IlluminaHumanMethylation450kanno.ilmn12.hg19 (>= 0.6.0),
+    IlluminaHumanMethylationEPICanno.ilm10b4.hg19 (>= 0.6.0),
+    limma (>= 3.46.0),
+    org.Hs.eg.db (>= 3.12.0),
+    parallel (>= 4.0.5),
+    pheatmap (>= 1.0.12),
+    plyr (>= 1.8.6),
+    scales (>= 1.1.1),
+    scater (>= 1.18.6),
+    Seurat (>= 4.0.1),
+    sva (>= 3.38.0)
+Suggests: 
+    TxDb.Hsapiens.UCSC.hg38.knownGene (>= 3.10.0),
+    GenomicFeatures (>= 1.42.3),
+    org.Mm.eg.db (>= 3.12.0),
+    TxDb.Mmusculus.UCSC.mm10.knownGene (>= 3.10.0),
+    TxDb.Hsapiens.UCSC.hg19.knownGene (>= 3.2.2),
+    GenomicRanges (>= 1.42.0),
+    IlluminaHumanMethylation27kanno.ilmn12.hg19 (>= 0.6.0)
+Depends: 
+    R (>= 2.10)
