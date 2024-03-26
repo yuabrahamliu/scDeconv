@@ -1,6 +1,6 @@
 # Tutorial for R package scDeconv
 
-## 
+## Yu Liu
 ## 09/03/2022
 
 ## Introduction
