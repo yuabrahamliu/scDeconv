@@ -20,6 +20,7 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+biocViews: 
 Imports: 
     AnnotationDbi (>= 1.52.0),
     doParallel (>= 1.0.16),
