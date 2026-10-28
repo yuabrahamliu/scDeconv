@@ -13,10 +13,6 @@ It assumes that paired samples have similar cell compositions. So the cell conte
 
 cell deconvolution, DNA methylation, scRNA-seq, ensemble, co-training, cell-type-specific inter-group differential features
 
-## Citation
-
-Liu Y. [*scDeconv*: an R package to deconvolve bulk DNA methylation data with scRNA-seq data and paired bulk RNA-DNA methylation data.](https://academic.oup.com/bib/article-abstract/23/3/bbac150/6572659?redirectedFrom=fulltext) *Brief Bioinform*. 2022 May 13;23(3):bbac150. doi: 10.1093/bib/bbac150. PMID: 35453146; PMCID: PMC9271220.
-
 ## Package overview
 
 The package has three modules. The first is a single-omics deconvolution module. Its function `scRef` can construct cell transcriptomic references from scRNA-seq data. Next, the reference is transferred to the function `refDeconv`. It performs a recursion process to solve a constrained linear model to deconvolve bulk RNA data with the RNA reference. 
@@ -347,6 +343,4 @@ head(externalcellconts)
 #> GSM788415 0.3099221 0.2017879 0.1769487 0.3113413
 ```
 
-In addition, *scDeconv* also contains other useful functions such as `celldiff`, which selects cell-type-specific inter-group differential features from bulk data; and `enrichwrapper`, which annotates differential DNAm feature function using a correlation-based method. To make this tutorial simple and clear, they will not be covered here, but the users can explore them via the help documents and the original publication for this package. 
-
-My original publication on *scDeconv* contains more examples of its functions and is recommended to read (Liu Y. [*scDeconv*: an R package to deconvolve bulk DNA methylation data with scRNA-seq data and paired bulk RNA-DNA methylation data.](https://academic.oup.com/bib/article-abstract/23/3/bbac150/6572659?redirectedFrom=fulltext) *Brief Bioinform*. 2022 May 13;23(3):bbac150. doi: 10.1093/bib/bbac150. PMID: 35453146; PMCID: PMC9271220).
+In addition, *scDeconv* also contains other useful functions such as `celldiff`, which selects cell-type-specific inter-group differential features from bulk data; and `enrichwrapper`, which annotates differential DNAm feature function using a correlation-based method. To make this tutorial simple and clear, they will not be covered here, but the users can explore them via the help documents and the original publication for this package.
