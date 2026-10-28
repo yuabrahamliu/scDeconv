@@ -343,4 +343,4 @@ head(externalcellconts)
 #> GSM788415 0.3099221 0.2017879 0.1769487 0.3113413
 ```
 
-In addition, *scDeconv* also contains other useful functions such as `celldiff`, which selects cell-type-specific inter-group differential features from bulk data; and `enrichwrapper`, which annotates differential DNAm feature function using a correlation-based method. To make this tutorial simple and clear, they will not be covered here, but the users can explore them via the help documents and the original publication for this package.
+In addition, *scDeconv* also contains other useful functions such as `celldiff`, which selects cell-type-specific inter-group differential features from bulk data; and `enrichwrapper`, which annotates differential DNAm feature function using a correlation-based method. To make this tutorial simple and clear, they will not be covered here, but the users can explore them via the help documents for this package.
